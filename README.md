@@ -1,4 +1,4 @@
-# astro-seo-essentials
+# Astro SEO Essentials 🚀
 
 A ready-made SEO setup for [Astro](https://astro.build) sites. Run one command, fill in a few blanks, and every page on your site gets correct title tags, descriptions, social sharing cards, a sitemap, a robots.txt, and structured data. The same way, every time.
 
