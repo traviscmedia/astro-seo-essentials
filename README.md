@@ -4,18 +4,20 @@ A ready-made SEO setup for [Astro](https://astro.build) sites. Run one command, 
 
 It works two ways:
 
-- **As a script** you run yourself (no AI needed).
+- **As a script** you run yourself on your local machine (no AI needed).
 - **As a skill** for AI coding agents (Claude Code, Codex, Hermes), so you can type `/astro-seo-essentials` and let the agent do the setup.
 
 ---
 
 ## Who this is for
 
-- You're building sites with Astro and don't want to research SEO tags every time.
-- You've built one site with good SEO and want to repeat that setup on the next one without copy-pasting.
-- You use an AI coding agent and want it to do SEO **your** way, not whatever it invents.
+- You're building sites with Astro and don't want to manually setup the SEO functionality from scratch.
+- You've built an Astro site but it is lacking SEO features, and want to implement all of the essentials in one shot.
+- You use an AI coding agent and want it to implement a repeatable SEO strategy, the right way, not whatever it invents.
 
 You don't need to know anything about SEO to use this. You do need a working Astro project and Node.js installed.
+
+> **First time?** Try it on a throwaway Astro project before your real one. `npm create astro@latest seo-test -- --template minimal --yes` gives you a blank site in under a minute. If you'd rather see it on your actual project, make a branch first so you can throw the changes away if you don't like them.
 
 ---
 
