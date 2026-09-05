@@ -1,0 +1,104 @@
+---
+/**
+ * src/components/StructuredData.astro
+ * JSON-LD for things SEO.astro doesn't derive on its own. Place in the layout's `head` slot.
+ * Article nodes belong on <SEO articleJsonLd /> — this component is for the rest.
+ *
+ *   <StructuredData type="website" />
+ *   <StructuredData type="product" product={{ name, description, image, brand, price, url }} />
+ *   <StructuredData schema={{ '@type': 'FAQPage', mainEntity: [...] }} />
+ *
+ * WARNING on ratings: Google's review-snippet guidelines forbid self-serving reviews.
+ * Emitting `aggregateRating` for your own single review is a policy violation and can
+ * get rich results suppressed site-wide. Only pass `rating` when the score comes from
+ * multiple genuine third-party reviews you can substantiate.
+ */
+import { SITE } from '../config/site'
+import { absUrl, safeJsonLd, withContext } from '../lib/seo'
+
+export interface Product {
+  name: string
+  description: string
+  /** Path in /public or absolute URL */
+  image: string
+  brand?: string
+  /** '49.99' → price + currency; anything else (e.g. '$40–$60') → priceRange */
+  price?: string
+  currency?: string
+  url?: string
+}
+
+export interface Rating {
+  value: number
+  count: number
+  best?: number
+  worst?: number
+}
+
+export interface Props {
+  type?: 'website' | 'product'
+  product?: Product
+  rating?: Rating
+  /** Any node(s). @context added if missing. Used as-is when `type` is omitted. */
+  schema?: Record<string, unknown> | Record<string, unknown>[]
+}
+
+if (!Astro.site) throw new Error('StructuredData.astro: `site` must be set in astro.config.mjs')
+const site = Astro.site
+
+const { type, product, rating, schema } = Astro.props
+const pageURL = absUrl(Astro.url.pathname, site)!
+
+let node: Record<string, unknown> | undefined
+
+if (type === 'website') {
+  node = {
+    '@type': 'WebSite',
+    name: SITE.name,
+    url: site.href,
+    description: SITE.description,
+    publisher: {
+      '@type': 'Organization',
+      name: SITE.author,
+      url: SITE.authorUrl || site.href,
+    },
+  }
+}
+
+if (type === 'product' && product) {
+  const numeric = product.price !== undefined && /^\d+(\.\d+)?$/.test(product.price)
+  node = {
+    '@type': 'Product',
+    name: product.name,
+    description: product.description,
+    image: absUrl(product.image, site),
+    ...(product.brand && { brand: { '@type': 'Brand', name: product.brand } }),
+    ...(product.price && {
+      offers: {
+        '@type': 'Offer',
+        url: product.url ?? pageURL,
+        availability: 'https://schema.org/InStock',
+        ...(numeric
+          ? { price: product.price, priceCurrency: product.currency ?? 'USD' }
+          : { priceRange: product.price }),
+      },
+    }),
+    ...(rating && {
+      aggregateRating: {
+        '@type': 'AggregateRating',
+        ratingValue: rating.value,
+        reviewCount: rating.count,
+        bestRating: rating.best ?? 5,
+        worstRating: rating.worst ?? 1,
+      },
+    }),
+  }
+}
+
+const nodes: Record<string, unknown>[] = []
+if (node) nodes.push(node)
+if (schema) nodes.push(...(Array.isArray(schema) ? schema : [schema]))
+const out = nodes.length ? safeJsonLd(withContext(nodes.length === 1 ? nodes[0] : nodes)) : undefined
+---
+
+{out && <script type="application/ld+json" set:html={out} />}
