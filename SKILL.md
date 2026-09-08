@@ -1,13 +1,13 @@
 ---
 name: astro-seo-essentials
-description: Set up baseline technical SEO on an Astro site the same way every time — a reusable SEO head component (title, description, canonical, robots, Open Graph, Twitter card, favicons, hreflang), JSON-LD structured data, @astrojs/sitemap, and a robots.txt endpoint, all driven by one site config. Use this whenever the user creates a new Astro project, asks to "add SEO", "set up meta tags", "add Open Graph / social sharing", "add a sitemap or robots.txt", "add structured data / JSON-LD", or audits an existing Astro site's head tags. Trigger even if they only mention one of those pieces — the point of the skill is doing the whole set consistently.
+description: Set up baseline technical SEO on an Astro site the same way every time — a reusable SEO head component (title, description, canonical, robots, Open Graph, Twitter card, favicons, hreflang), JSON-LD structured data, @astrojs/sitemap, and a robots.txt endpoint, all driven by one site config. Use this whenever the user creates a new Astro project, asks to "add SEO", "set up meta tags", "add Open Graph / social sharing", "add a sitemap or robots.txt", "add structured data / JSON-LD", or audits an existing Astro site's head tags. Trigger even if they only mention one of those pieces, the point of the skill is doing the whole set consistently.
 ---
 
 # Astro SEO Essentials
 
 Install a fixed, known-good SEO layer into an Astro project using the installer in `scripts/setup.mjs` and the templates in `assets/`. The templates encode decisions the user already made; the job is to apply them faithfully, not to improve them.
 
-## Scope — read this first
+## Scope: read this first
 
 This skill is a preset, not a starting point for your own ideas. Stay inside it:
 
@@ -20,13 +20,13 @@ This skill is a preset, not a starting point for your own ideas. Stay inside it:
 
 ## Files this skill installs
 
-| Template (in `assets/`)     | Destination                          | Purpose                                                        |
-| --------------------------- | ------------------------------------ | -------------------------------------------------------------- |
-| `site.ts`                   | `src/config/site.ts`                 | Single source of truth for name, description, OG image, etc.   |
-| `seo.ts`                    | `src/lib/seo.ts`                     | Helpers: absolute URLs, safe JSON-LD serialisation, dev warnings |
-| `SEO.astro`                 | `src/components/SEO.astro`           | Everything in `<head>`, plus derived Article JSON-LD           |
-| `StructuredData.astro`      | `src/components/StructuredData.astro`| JSON-LD for WebSite, Product, or any custom schema             |
-| `robots.txt.ts`             | `src/pages/robots.txt.ts`            | robots.txt as an endpoint so the sitemap URL comes from `site` |
+| Template (in `assets/`) | Destination                           | Purpose                                                          |
+| ----------------------- | ------------------------------------- | ---------------------------------------------------------------- |
+| `site.ts`               | `src/config/site.ts`                  | Single source of truth for name, description, OG image, etc.     |
+| `seo.ts`                | `src/lib/seo.ts`                      | Helpers: absolute URLs, safe JSON-LD serialisation, dev warnings |
+| `SEO.astro`             | `src/components/SEO.astro`            | Everything in `<head>`, plus derived Article JSON-LD             |
+| `StructuredData.astro`  | `src/components/StructuredData.astro` | JSON-LD for WebSite, Product, or any custom schema               |
+| `robots.txt.ts`         | `src/pages/robots.txt.ts`             | robots.txt as an endpoint so the sitemap URL comes from `site`   |
 
 Scripts (not copied; run from the skill folder): `setup.mjs` installs, `doctor.mjs` checks source before build, `check-seo.mjs` checks `dist/` after build.
 
@@ -51,7 +51,7 @@ The site URL is **not** in `site.ts`. It lives only in `astro.config.mjs` as `si
 
    It copies the five template files, adds `site` and the sitemap integration to `astro.config`, installs `@astrojs/sitemap` with the project's package manager, and prints warnings for conflicts (a `public/robots.txt`, a hand-rolled sitemap route). Use `--dry-run` first if the project already has SEO files. Do the copying by hand only if the script cannot run; if you do, copy byte-for-byte.
 
-4. **Finish `site.ts`.** Replace every remaining `EDIT` marker; grep for `EDIT` afterwards and none should remain. Make sure the OG image the config points to exists in `public/` at 1200×630. If `trailingSlash` is set in the config, note it — canonical URLs must match the deployed form.
+4. **Finish `site.ts`.** Replace every remaining `EDIT` marker; grep for `EDIT` afterwards and none should remain. Make sure the OG image the config points to exists in `public/` at 1200×630. If `trailingSlash` is set in the config, note it, canonical URLs must match the deployed form.
 
 5. **Wire `SEO.astro` into the base layout.** Replace whatever ad-hoc `<title>`/meta tags the layout already has with `<SEO {...seo} />` inside `<head>`, and pass the layout's props through. Minimal shape:
 
@@ -80,7 +80,7 @@ The site URL is **not** in `site.ts`. It lives only in `astro.config.mjs` as `si
    - Articles / blog posts: pass `article={{ publishedTime, authors, tags }}` and `articleJsonLd` to the layout. `SEO.astro` derives the Article node from the same props — never write it by hand or pass the title twice.
    - Product pages only: `<StructuredData slot="head" type="product" product={{...}} />`. Read the component's warning before passing `rating` — self-authored review ratings violate Google's guidelines and can get rich results suppressed.
    - Anything else (FAQ, Organization, BreadcrumbList): `schema={{...}}` on either component.
-   All JSON-LD goes through `safeJsonLd()`, which escapes `<` and `>` as unicode escapes so a `</script>` in content cannot break out of the tag. Never emit JSON-LD with a bare `JSON.stringify`.
+     All JSON-LD goes through `safeJsonLd()`, which escapes `<` and `>` as unicode escapes so a `</script>` in content cannot break out of the tag. Never emit JSON-LD with a bare `JSON.stringify`.
 
 7. **Set per-page overrides** on at least the homepage and one inner page so the pattern is visible: `<Layout title="..." description="..." article={{...}} articleJsonLd>`. For content collections, pass frontmatter through in the dynamic route so publishing a post never touches code.
 

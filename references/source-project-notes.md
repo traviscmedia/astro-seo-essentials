@@ -36,7 +36,7 @@ The templates were distilled from the user's "Astro Review Site" project (Astro 
 
 ## Ideas borrowed from other Astro SEO packages
 
-Reviewed `jonasmerlin/astro-seo` (the popular library) and `rodgtr1/astro-seo-kit` (newer, Astro 6/7). Neither is used as a dependency — the goal is a self-maintained preset — but these ideas were adopted:
+Reviewed `jonasmerlin/astro-seo` (the popular library) and `rodgtr1/astro-seo-kit` (newer, Astro 6/7). Neither is used as a dependency, the goal is a self-maintained preset, but these ideas were adopted:
 
 | Idea | Source | Applied as |
 | --- | --- | --- |
